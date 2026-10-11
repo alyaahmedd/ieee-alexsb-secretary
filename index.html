@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IEEE AlexSB — Secretary Elections</title>
+<style>
+  :root { --purple:#00629B; --deep:#003B5C; --pink:#00A3E0; --lav:#EAF5FB; --ink:#172B3A; }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; min-height:100vh; display:grid; place-items:center; padding:24px;
+    font-family: ui-rounded, "Trebuchet MS", system-ui, -apple-system, sans-serif;
+    color:var(--ink);
+    background: radial-gradient(circle at 15% 15%, #fff 0 3px, transparent 4px),
+                radial-gradient(circle at 85% 25%, #fff 0 4px, transparent 5px),
+                linear-gradient(135deg,#eaf5fb,#f7fcff 55%,#dceefa);
+    background-size: 100px 100px, 130px 130px, auto;
+  }
+  .card {
+    width:min(620px,100%); background:rgba(255,255,255,.92); border:1px solid #fff;
+    border-radius:28px; padding:clamp(24px,5vw,44px); text-align:center;
+    box-shadow:0 18px 55px #003B5C20; position:relative; overflow:hidden;
+  }
+  .pill { display:inline-block; padding:7px 12px; border-radius:999px; background:#dceefa; color:var(--deep); font-size:.78rem; font-weight:800; letter-spacing:.08em; }
+  .mascot { font-size:68px; margin:14px 0 4px; animation:bob 2s ease-in-out infinite; }
+  @keyframes bob { 0%,100%{transform:translateY(0) rotate(-3deg)} 50%{transform:translateY(-7px) rotate(3deg)} }
+  h1 { color:var(--deep); font-size:clamp(1.7rem,5vw,2.55rem); line-height:1.12; margin:12px 0; }
+  .sub { color:#526b7a; line-height:1.6; margin:0 auto; max-width:440px; }
+  .question { margin:22px 0 6px; font-weight:800; font-size:1.12rem; }
+  .stage { height:110px; margin:12px auto 4px; max-width:390px; position:relative; display:flex; align-items:center; justify-content:center; gap:18px; }
+  button { border:0; border-radius:999px; font:inherit; font-weight:800; cursor:pointer; transition:transform .18s, box-shadow .18s, font-size .18s; }
+  #yes { background:var(--pink); color:white; padding:15px 30px; box-shadow:0 8px 18px #f04f9138; font-size:1rem; z-index:2; }
+  #yes:hover { box-shadow:0 10px 22px #f04f9155; }
+  #no { background:#f1edf4; color:#65566d; padding:11px 20px; position:absolute; left:60%; top:50%; transform:translate(-50%,-50%); z-index:3; }
+  .hint { font-size:.82rem; color:#8b7b94; margin-top:2px; }
+  .footer { font-size:.78rem; color:#8b7b94; margin-top:26px; }
+  .hidden { display:none; }
+  .confetti { font-size:2rem; letter-spacing:7px; margin:12px 0; }
+  .final-message { background:#f7f0ff; padding:18px; border-radius:18px; margin:20px 0; line-height:1.6; }
+  .again { background:#dceefa; color:var(--deep); padding:12px 20px; }
+  @media (max-width:420px) { .stage { height:125px; } #no { left:68%; } }
+</style>
+</head>
+<body>
+<main class="card">
+  <section id="intro">
+    <div class="pill">IEEE ALEXSB • ELECTIONS</div>
+    <div class="mascot" aria-hidden="true">💙📋</div>
+    <h1>Turning ideas into impact</h1>
+    <p class="sub">Clear communication, thoughtful organization, and teamwork help great ideas move forward.</p>
+    <p class="question">Will you support <strong>Alya</strong> for IEEE AlexSB Secretary?</p>
+    <div class="stage" id="stage">
+      <button id="yes">YES! ✨</button>
+      <button id="no">No 🙈</button>
+    </div>
+    <p class="hint">Psst… try clicking “No” 👀</p>
+    <p class="footer">Turning ideas into impact • IEEE AlexSB</p>
+  </section>
+  <section id="success" class="hidden">
+    <div class="pill">THANK YOU FOR THE SUPPORT</div>
+    <div class="confetti" aria-hidden="true">🎉 💙 ✨</div>
+    <h1>Let’s make an impact together!</h1>
+    <p class="sub">My goal is to help make our next season more organized, connected, and impactful—where ideas are heard and initiatives keep moving forward.</p>
+    <div class="final-message">
+      <strong>Alya for IEEE AlexSB Secretary</strong><br>
+      Turning ideas into action through clear communication, reliable coordination, and a stronger team.
+    </div>
+    <p class="sub">Thank you for being part of the journey 💙</p>
+    <button class="again" id="again">Play again ↻</button>
+    <p class="footer">IEEE AlexSB elections • Made with 💙</p>
+  </section>
+</main>
+<script>
+const no = document.getElementById('no');
+const yes = document.getElementById('yes');
+const stage = document.getElementById('stage');
+const intro = document.getElementById('intro');
+const success = document.getElementById('success');
+let attempts = 0;
+function dodge() {
+  attempts++;
+  const area = stage.getBoundingClientRect();
+  const btn = no.getBoundingClientRect();
+  const maxX = Math.max(12, area.width - btn.width - 8);
+  const maxY = Math.max(8, area.height - btn.height - 8);
+  no.style.left = (8 + Math.random() * maxX) + 'px';
+  no.style.top = (8 + Math.random() * maxY) + 'px';
+  no.style.transform = 'none';
+  const scale = Math.min(1.65, 1 + attempts * 0.07);
+  yes.style.transform = `scale(${scale})`;
+  yes.style.fontSize = `${Math.min(1.35, 1 + attempts * 0.025)}rem`;
+  no.textContent = attempts > 4 ? 'Still no? 😭' : 'No 🙈';
+}
+no.addEventListener('pointerenter', dodge);
+no.addEventListener('click', (e) => { e.preventDefault(); dodge(); });
+no.addEventListener('touchstart', (e) => { e.preventDefault(); dodge(); }, {passive:false});
+yes.addEventListener('click', () => { intro.classList.add('hidden'); success.classList.remove('hidden'); });
+document.getElementById('again').addEventListener('click', () => {
+  attempts = 0; yes.style.transform = ''; yes.style.fontSize = '';
+  no.textContent = 'No 🙈'; no.style.left = '60%'; no.style.top = '50%'; no.style.transform = 'translate(-50%,-50%)';
+  success.classList.add('hidden'); intro.classList.remove('hidden');
+});
+</script>
+</body>
+</html>
